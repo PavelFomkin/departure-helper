@@ -1,7 +1,5 @@
 package com.departure.helper.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -26,13 +24,13 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     @GetMapping("/")
-    public String showUploadForm(Model model) {
+    public String showUploadForm() {
 
         return "index";
     }
 
     @PostMapping("/")
-    public ResponseEntity<InputStreamResource> processExcelFile(@RequestParam("file") MultipartFile file, Model model) {
+    public ResponseEntity<InputStreamResource> processExcelFile(@RequestParam("file") MultipartFile file) {
 
         XlsxFileValidator.validate(file);
 
@@ -45,7 +43,7 @@ public class FileUploadController {
     }
 
     @ExceptionHandler({FileFormatException.class, FileProcessingException.class})
-    public String handleFileFormatException(RuntimeException ex, Model model) {
+    public String handleFileFormatAndProcessingException(RuntimeException ex, Model model) {
 
         model.addAttribute("errorMessage", ex.getMessage());
         return "index";
