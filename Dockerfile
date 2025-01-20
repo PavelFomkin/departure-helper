@@ -19,10 +19,11 @@ RUN gradle clean build -x test
 FROM openjdk:11-jre-slim
 
 # Set the working directory inside the container for the app
-WORKDIR /
+WORKDIR /app
 
 # Copy the JAR file from the build stage
-COPY --from=build /app/build/libs/*.jar app.jar
+# Update this line to copy the specific JAR file (departure-helper-0.0.1-SNAPSHOT.jar)
+COPY --from=build /app/build/libs/departure-helper-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port the application will run on (default: 8080)
 EXPOSE 8081
