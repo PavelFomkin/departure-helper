@@ -1,8 +1,6 @@
 package com.departure.helper.service;
 
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +9,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.departure.helper.exception.FileProcessingException;
@@ -20,8 +21,10 @@ import com.departure.helper.model.DepartureNotificationDataPositions;
 @Service
 public class DepartureNotificationGenerator {
 
-    private static final String DEPARTURE_NOTIFICATION_TEMPLATE_PATH = "src/main/resources/static/excel/template.xls";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     public Workbook generate(DepartureNotificationData departureNotificationData) {
 
@@ -49,7 +52,8 @@ public class DepartureNotificationGenerator {
 
     private HSSFWorkbook readDepartureNotificationTemplate() {
 
-        try (InputStream inputStream = Files.newInputStream(Paths.get(DEPARTURE_NOTIFICATION_TEMPLATE_PATH))) {
+        Resource resource = resourceLoader.getResource("classpath:/static/excel/template.xls");
+        try (InputStream inputStream = resource.getInputStream()) {
             return new HSSFWorkbook(inputStream);
         } catch (Exception e) {
             throw new FileProcessingException("Template file not found in resources.");
