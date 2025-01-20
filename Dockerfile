@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy your Gradle wrapper and build files
 COPY gradle/wrapper /app/gradle/wrapper
+COPY gradle.properties /app/
 COPY build.gradle /app/
 COPY settings.gradle /app/
 
