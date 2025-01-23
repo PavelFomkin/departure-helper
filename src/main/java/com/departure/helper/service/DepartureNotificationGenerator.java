@@ -1,6 +1,6 @@
 package com.departure.helper.service;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,11 +10,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.departure.helper.exception.FileProcessingException;
 import com.departure.helper.model.DepartureNotificationData;
 import com.departure.helper.model.DepartureNotificationDataPositions;
 
@@ -24,11 +22,14 @@ public class DepartureNotificationGenerator {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
 
     @Autowired
-    private ResourceLoader resourceLoader;
+    DepartureNotificationTemplateService templateService;
 
-    public Workbook generate(DepartureNotificationData departureNotificationData) {
+    public Workbook generate(DepartureNotificationData departureNotificationData, MultipartFile customTemplate)
+            throws IOException {
 
-        Workbook workbook = readDepartureNotificationTemplate();
+        Workbook workbook = customTemplate != null
+                ? new HSSFWorkbook(customTemplate.getInputStream())
+                : templateService.getDefaultDepartureNotificationTemplate();
         Sheet sheet = workbook.getSheetAt(0);
 
         String fullName = departureNotificationData.getFullName();
@@ -48,16 +49,6 @@ public class DepartureNotificationGenerator {
         fillDepartureNotificationData(sheet, DepartureNotificationDataPositions.DEPARTURE_DATE, departureDate);
 
         return workbook;
-    }
-
-    private HSSFWorkbook readDepartureNotificationTemplate() {
-
-        Resource resource = resourceLoader.getResource("classpath:/static/excel/template.xls");
-        try (InputStream inputStream = resource.getInputStream()) {
-            return new HSSFWorkbook(inputStream);
-        } catch (Exception e) {
-            throw new FileProcessingException("Template file not found in resources.");
-        }
     }
 
     private void fillDepartureNotificationData(Sheet sheet, DepartureNotificationDataPositions positions, String value) {
