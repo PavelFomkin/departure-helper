@@ -20,7 +20,7 @@ import com.departure.helper.model.DepartureNotificationData;
 public class DepartureNotificationService {
 
     @Autowired
-    private departureNotificationDataExcelParser excelParser;
+    private DepartureNotificationDataExcelParser excelParser;
 
     @Autowired
     private DepartureNotificationGenerator departureNotificationGenerator;

@@ -20,10 +20,10 @@ import com.departure.helper.model.DepartureNotificationData;
 import com.departure.helper.model.DepartureNotificationData.Builder;
 
 @Service
-public class departureNotificationDataExcelParser {
+public class DepartureNotificationDataExcelParser {
 
     private static final Map<String, ColumnProcessor> columnProcessors = Map.of(
-            "фио", (builder, cell) -> builder.fullName(cell.getStringCellValue()),
+            "фио", (builder, cell) -> builder.fullName(cell.getStringCellValue().toUpperCase()),
             "дата рождения", (builder, cell) -> builder.birthDate(cell.getDateCellValue()),
             "дата снятия", (builder, cell) -> builder.departureDate(cell.getDateCellValue()));
 
