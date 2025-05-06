@@ -72,4 +72,12 @@ public class DepartureNotificationController {
         model.addAttribute("checked", model.getAttribute("checked"));
         return "index";
     }
+
+    @ExceptionHandler({OutOfMemoryError.class})
+    public String handleFileFormatAndProcessingException(Model model) {
+
+        model.addAttribute("errorMessage", "Xlsx file is too big for the server, please try to make it smaller");
+        model.addAttribute("checked", model.getAttribute("checked"));
+        return "index";
+    }
 }

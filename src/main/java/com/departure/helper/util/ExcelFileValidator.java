@@ -2,6 +2,7 @@ package com.departure.helper.util;
 
 import org.apache.logging.log4j.util.Strings;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.departure.helper.exception.FileFormatException;
@@ -25,12 +26,11 @@ public class ExcelFileValidator {
             throw new FileFormatException("Invalid file type. Please upload a valid .xlsx file.");
         }
 
-        // TODO:investigate why throws OutOfMemoryError
-//        try (var inputStream = file.getInputStream()) {
-//            new XSSFWorkbook(inputStream);  // Try to load as XSSFWorkbook
-//        } catch (Exception e) {
-//            throw new FileFormatException("File is not a valid .xlsx Excel file.");
-//        }
+        try (var inputStream = file.getInputStream()) {
+            new XSSFWorkbook(inputStream);  // Try to load as XSSFWorkbook
+        } catch (Exception e) {
+            throw new FileFormatException("File is not a valid .xlsx Excel file.");
+        }
     }
 
     public static void validateXls(MultipartFile file) {
